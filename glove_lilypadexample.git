@@ -1,0 +1,218 @@
+///* Glove - Hsing Example with Lilypad
+  
+  Make sure the baud is set to 9600.
+*/
+
+/* Pin Definitions */
+// LEDs: white LEDs are connected to 5, 6, A2, A3, A4
+int ledPin = 13;
+int ledPins[] = {5, 6, A2, A4, A3, 9, 10, 11};
+int switchPin = 2;
+int buttonPin = A5;
+int vibePin = 3;
+int speakerPin = 7;
+int speakerPin2 = 12;
+int lightSensorPin = A6;
+int tempSensorPin = A1;
+int frequencyinHertz;
+long timeInMilliseconds;
+int buttonValue;
+
+/* Global variables */
+int light = 100;
+
+void setup()
+{
+           	
+  //STARTUP LED SEQUENCE
+  for(int i=0; i<5; i++)  // This for loop will run 5 times
+  {  // blink the white LEDs (first 5 LEDs in ledPins array)
+    pinMode(ledPins[i], OUTPUT);  // set pin as output
+    digitalWrite(ledPins[i], HIGH);  // turn LED on
+    delay(250);  // wait for a quarter second
+    digitalWrite(ledPins[i], LOW); // turn LED off
+  }
+  for(int i=5;i<8;i++)  // This for loop will run 3 times
+  {   // blink the RGB LEDs (last 3 LEDs in ledPins array)
+    pinMode(ledPins[i], OUTPUT);   // set the pin as an output 
+    digitalWrite(ledPins[i], LOW);  // turn RGB LED on
+    delay(250);  // wait a quarter second
+    digitalWrite(ledPins[i], HIGH);  // turn the RGB LED off
+    // Note that a HIGH turns the RGB LED off, LOW is on
+    // that's backwards from the white LEDs
+  }
+  ////////////////////////////////////////////
+
+  pinMode(ledPin, OUTPUT);
+ 
+  //Switch
+  pinMode(switchPin, INPUT);  // set the switch as an input
+  digitalWrite(switchPin, HIGH);  // enable the pull-up resistor
+
+  //Button
+  pinMode(buttonPin, INPUT);  // set the pin as an input
+  digitalWrite(buttonPin, HIGH);  // enable the pull-up resistor
+  
+  //VIBE
+  pinMode(vibePin, OUTPUT);  // set the pin as an output
+
+  //Speaker Buzzer
+  pinMode(speakerPin, OUTPUT);	// sets the speakerPin to be an output
+  pinMode(speakerPin2, OUTPUT); 	// For ProtoSnap only 
+  digitalWrite(speakerPin2, LOW); 	// For ProtoSnap only: sets this as ground 
+
+  Serial.begin(9600);  // We'll output some information over serial
+}
+
+void beep (unsigned char speakerPin, int frequencyinHertz, long timeInMilliseconds)	//the sound producing function 
+{	
+         int x;	 
+         long delayAmount=(long)(1000000/frequencyinHertz);	 
+         long loopTime = (long)((timeInMilliseconds*1000)/(delayAmount*2));	
+         for (x=0;x<loopTime;x++)	 
+         {	 
+            digitalWrite(speakerPin,HIGH);	 
+            delayMicroseconds(delayAmount);	 
+            digitalWrite(speakerPin,LOW);	 
+            delayMicroseconds(delayAmount);	 
+          }	 
+ }	 
+
+void scale()	 
+ {	//twinkle twinkle 
+            digitalWrite(ledPin,HIGH);	//turn on the LED
+            beep(speakerPin,2093,500);	//C: play the note C (C7 from the chart linked to above) for 500ms
+            beep(speakerPin,2093,500);
+            beep(speakerPin,3136,500);	//G  
+            beep(speakerPin,3136,500);
+            beep(speakerPin,3520,500);	//A 
+            beep(speakerPin,3520,500);	//A 
+            beep(speakerPin,3136,500);	//G 
+            beep(speakerPin,2793,500);	//F  
+            beep(speakerPin,2793,500);	//F  
+            beep(speakerPin,2637,500);	//E  
+            beep(speakerPin,2637,500);
+            beep(speakerPin,2349,500);	//D
+            beep(speakerPin,2349,500);
+            beep(speakerPin,4186,500);	//C
+            beep(speakerPin,3136,500);	//G 
+            beep(speakerPin,2793,500);	//F
+            beep(speakerPin,2637,500);	//E
+            beep(speakerPin,2349,500);	//D
+            beep(speakerPin,3136,500);	//G 
+            beep(speakerPin,2793,500);	//F
+            beep(speakerPin,2637,500);	//E
+            beep(speakerPin,2349,500);	//D
+            beep(speakerPin,2093,500);	//C: play the note C (C7 from the chart linked to above) for 500ms
+            beep(speakerPin,2093,500);
+            beep(speakerPin,3136,500);	//G  
+            beep(speakerPin,3136,500);
+            beep(speakerPin,3520,500);	//A 
+            beep(speakerPin,3520,500);	//A 
+            beep(speakerPin,3136,500);	//G 
+            beep(speakerPin,2793,500);	//F  
+            beep(speakerPin,2793,500);	//F  
+            beep(speakerPin,2637,500);	//E  
+            beep(speakerPin,2637,500);
+            beep(speakerPin,2349,500);	//D
+            beep(speakerPin,2349,500);
+            beep(speakerPin,4186,500);	//C     
+            digitalWrite(ledPin,LOW);	//turn off the LED  
+ }
+
+void loop()
+{	 
+
+    ///LIGHT TEST
+    if(analogRead(lightSensorPin) < 20){
+      //if its dark, turn on all white leds...
+      for(int i=0;i<5;i++)
+      {
+        digitalWrite(ledPins[i], HIGH);
+      }
+    }
+    else{
+      // if it's light, turn them off...
+      for(int i=0;i<5;i++)
+      {
+        digitalWrite(ledPins[i], LOW);
+      }
+    }
+
+    ///TEMP TEST initial 160
+    if(analogRead(tempSensorPin) > 210)
+      //if the tech puts a little hot air over the temp sensor it will raise to at least 170
+    
+    for(int i=5;i<8;i++)  // This for loop will run 3 times
+  {   // blink the RGB LEDs (last 3 LEDs in ledPins array)
+    pinMode(ledPins[i], OUTPUT);   // set the pin as an output 
+    digitalWrite(ledPins[i], LOW);  // turn RGB LED on
+    delay(1000);  // wait a quarter second
+    digitalWrite(ledPins[i], HIGH);  // turn the RGB LED off
+    // Note that a HIGH turns the RGB LED off, LOW is on
+  }
+    
+    else{
+      digitalWrite(ledPins[5], HIGH);  // turn the red LED off
+      digitalWrite(ledPins[6], HIGH);
+      digitalWrite(ledPins[7], HIGH);
+    }
+    
+      ///SONG
+  
+    
+    if(digitalRead(buttonPin) == 0) {
+       //light intro
+      digitalWrite(ledPins[0], HIGH);
+       digitalWrite(ledPins[1], HIGH);
+       delay(1000); // wait for a second
+       digitalWrite(ledPins[0], LOW);
+       digitalWrite(ledPins[1], LOW);
+       digitalWrite(ledPins[3], HIGH);
+       digitalWrite(ledPins[4], HIGH);
+       delay(1000); // wait for a quarter second
+       digitalWrite(ledPins[3], LOW);
+       digitalWrite(ledPins[4], LOW);
+       digitalWrite(ledPins[2], HIGH);
+       
+        scale();	//call the scale() function
+         delay(1000);	//delay for 1 second  
+         for(int i=0; i<5; i++)  // 
+         
+  {  // blink light exit
+    pinMode(ledPins[i], OUTPUT);  // set pin as output
+    digitalWrite(ledPins[i], HIGH);  // turn LED on
+    delay(500);  
+    digitalWrite(ledPins[i], LOW); // turn LED off
+  }
+    }	 
+    else {
+      digitalWrite(ledPin, LOW);
+}
+
+//viberator trigger
+  if(digitalRead(switchPin) == 0) {
+ digitalWrite(ledPins[7],LOW);   
+ digitalWrite(vibePin, HIGH);
+ digitalWrite(ledPins[7], HIGH);
+  }
+  else {
+ digitalWrite(vibePin, LOW);
+}
+
+    /* from here on down, we'll just print out the status of every input */
+    Serial.print("Switch=");
+    Serial.print(digitalRead(switchPin));
+
+    Serial.print("  Temp=");
+    Serial.print(analogRead(tempSensorPin));
+    
+    Serial.print("  Button=");
+    Serial.print(digitalRead(buttonPin));
+
+    Serial.print("  Light=");
+    Serial.println(analogRead(lightSensorPin)); 
+  }
+
+ 
+
